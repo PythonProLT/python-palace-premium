@@ -1,11 +1,35 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Menu, X, LogIn } from 'lucide-react';
+import { Menu, X, LogIn, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check current auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast.success('Successfully signed out');
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white shadow-sm py-4">
@@ -23,11 +47,17 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors">Blog</Link>
-          <Link to="/signin">
-            <Button className="bg-python-blue hover:bg-blue-700">
-              <LogIn className="mr-2 h-4 w-4" /> Sign In
+          {user ? (
+            <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700">
+              <LogOut className="mr-2 h-4 w-4" /> Sign Out
             </Button>
-          </Link>
+          ) : (
+            <Link to="/signin">
+              <Button className="bg-python-blue hover:bg-blue-700">
+                <LogIn className="mr-2 h-4 w-4" /> Sign In
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -46,11 +76,17 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors py-2">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors py-2">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors py-2">Blog</Link>
-          <Link to="/signin">
-            <Button className="bg-python-blue hover:bg-blue-700 w-full">
-              <LogIn className="mr-2 h-4 w-4" /> Sign In
+          {user ? (
+            <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700 w-full">
+              <LogOut className="mr-2 h-4 w-4" /> Sign Out
             </Button>
-          </Link>
+          ) : (
+            <Link to="/signin">
+              <Button className="bg-python-blue hover:bg-blue-700 w-full">
+                <LogIn className="mr-2 h-4 w-4" /> Sign In
+              </Button>
+            </Link>
+          )}
         </div>
       )}
     </nav>

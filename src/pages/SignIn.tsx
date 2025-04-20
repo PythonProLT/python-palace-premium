@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,15 @@ const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is already signed in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/');
+      }
+    });
+  }, [navigate]);
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -31,7 +40,7 @@ const SignIn: React.FC = () => {
       }
 
       if (data.user) {
-        toast.success('Successfully signed in');
+        toast.success('Successfully signed in!');
         navigate('/');
       }
     } catch (error) {

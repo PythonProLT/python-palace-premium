@@ -14,6 +14,15 @@ const SignUp: React.FC = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if user is already signed in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/');
+      }
+    });
+  }, [navigate]);
+
   const handleSignUp = async (event: React.FormEvent) => {
     event.preventDefault();
 
