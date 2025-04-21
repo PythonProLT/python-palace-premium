@@ -34,15 +34,17 @@ const IDELesson: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-6">
-              You can use an online IDE such as replit to  create and run your programs. 
+              You can use an online IDE such as replit to create and run your programs. 
               In this video, I will show you how to create an account for replit, 
               as well as some of its features.
             </p>
-            <div className="mb-6 rounded-lg overflow-hidden">
-              <img 
-                src="/lovable-uploads/f2accb11-c038-412f-87f6-dbaa8beee320.png" 
-                alt="Replit IDE interface showing Google Chrome with Replit shortcut"
-                className="w-full h-auto object-cover"
+            <div className="mb-6 rounded-lg overflow-hidden" style={{ position: 'relative', paddingTop: '65.03%' }}>
+              <iframe 
+                src="https://player.vimeo.com/video/1077408165?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                frameBorder="0" 
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                title="Online IDE Video"
               />
             </div>
             <Button className="w-full bg-python-blue hover:bg-blue-700"
