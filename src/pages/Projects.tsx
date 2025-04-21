@@ -2,7 +2,7 @@
 import React from "react";
 import { Plus, Code, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// Footer import removed
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -106,7 +106,7 @@ const Projects: React.FC = () => {
 
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> removed */}
     </div>
   );
 };

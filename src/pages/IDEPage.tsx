@@ -1,7 +1,7 @@
 
 import React from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// Footer import removed
 import IDE from "@/components/IDE";
 
 const IDEPage: React.FC = () => {
@@ -13,7 +13,7 @@ const IDEPage: React.FC = () => {
           <IDE />
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> removed */}
     </div>
   );
 };

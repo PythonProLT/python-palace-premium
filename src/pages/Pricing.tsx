@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+// Footer import removed
 
 const Pricing: React.FC = () => {
   return (
@@ -197,7 +197,7 @@ const Pricing: React.FC = () => {
         </div>
       </section>
       
-      <Footer />
+      {/* <Footer /> removed */}
     </div>
   );
 };
