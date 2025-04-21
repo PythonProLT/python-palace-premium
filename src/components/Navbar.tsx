@@ -47,6 +47,11 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors">Blog</Link>
+          {user && (
+            <Link to="/profile" className="text-gray-700 hover:text-python-blue transition-colors">
+              Profile
+            </Link>
+          )}
           {user ? (
             <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700">
               <LogOut className="mr-2 h-4 w-4" /> Sign Out
@@ -76,6 +81,11 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors py-2">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors py-2">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors py-2">Blog</Link>
+          {user && (
+            <Link to="/profile" className="text-gray-700 hover:text-python-blue transition-colors py-2">
+              Profile
+            </Link>
+          )}
           {user ? (
             <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700 w-full">
               <LogOut className="mr-2 h-4 w-4" /> Sign Out

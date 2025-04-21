@@ -25,7 +25,6 @@ const SignUp: React.FC = () => {
 
   const handleSignUp = async (event: React.FormEvent) => {
     event.preventDefault();
-
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -40,7 +39,22 @@ const SignUp: React.FC = () => {
       }
 
       if (data.user) {
-        toast.success('Successfully signed up! Please check your email to confirm your account.');
+        // Create blank profile for new user (display_name defaults to email username)
+        const defaultDisplayName =
+          email.includes("@") ? email.split("@")[0] : email;
+        const { error: profileError } = await supabase.from("profiles").insert({
+          id: data.user.id,
+          display_name: defaultDisplayName,
+          bio: "",
+          avatar_url: null,
+        });
+        if (profileError) {
+          toast.error("Profile creation failed", {
+            description: profileError.message,
+          });
+        } else {
+          toast.success('Successfully signed up! Please check your email to confirm your account.');
+        }
         navigate('/signin');
       }
     } catch (error) {
