@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import CodeBlock from '@/components/CodeBlock';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 
 const Index: React.FC = () => {
   const basicPythonCode = `print("Hello, World!")
@@ -199,8 +197,6 @@ print(list(fibonacci(10)))  # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]`;
           </div>
         </div>
       </section>
-      
-      <Footer />
     </div>
   );
 };

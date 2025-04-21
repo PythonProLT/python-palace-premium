@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// Footer import removed
 import { User } from "@supabase/supabase-js";
 import { Image, Loader2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -174,7 +173,6 @@ const Profile: React.FC = () => {
         <div className="flex-grow flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-python-blue" />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -252,7 +250,6 @@ const Profile: React.FC = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
