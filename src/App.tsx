@@ -74,6 +74,7 @@ const App = () => (
           <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
           <Route path="/projects" element={<PrivateRoute element={<Projects />} />} />
           <Route path="/ide" element={<PrivateRoute element={<IDEPage />} />} />
+          <Route path="/test-payment" element={<PrivateRoute element={<TestPayment />} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-// Footer import removed
 
 const Pricing: React.FC = () => {
   return (
@@ -92,9 +90,9 @@ const Pricing: React.FC = () => {
                 </li>
               </ul>
               
-              <Link to="/signup">
+              <Link to="/test-payment">
                 <Button className="w-full bg-python-blue hover:bg-blue-700">
-                  Start Premium
+                  Start Premium (Test Payment)
                 </Button>
               </Link>
             </div>
@@ -196,8 +194,6 @@ const Pricing: React.FC = () => {
           </Link>
         </div>
       </section>
-      
-      {/* <Footer /> removed */}
     </div>
   );
 };
