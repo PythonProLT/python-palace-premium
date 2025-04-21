@@ -12,19 +12,19 @@ const IDE: React.FC = () => {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState("");
   const [isExecuting, setIsExecuting] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"code" | "output">("code");
 
   // Improved run function with simulated execution
   const runCode = () => {
     setIsExecuting(true);
     setOutput("Executing code...");
-    
+
     // Simulate code execution with timeout
     setTimeout(() => {
       try {
         // Parse print statements from the code
         const prints = [];
         const lines = code.split('\n');
-        
         for (const line of lines) {
           const trimmed = line.trim();
           if (trimmed.startsWith('print(') && trimmed.endsWith(')')) {
@@ -35,18 +35,19 @@ const IDE: React.FC = () => {
             prints.push(processed);
           }
         }
-        
+
         if (prints.length > 0) {
           setOutput(prints.join('\n'));
         } else {
           setOutput("Code executed successfully (no output)");
         }
         toast.success("Code executed successfully");
-      } catch (error) {
+      } catch (error: any) {
         setOutput(`Error: ${error.message}`);
         toast.error("Error executing code");
       } finally {
         setIsExecuting(false);
+        setSelectedTab("output"); // Switch to output tab on run
       }
     }, 500);
   };
@@ -82,7 +83,7 @@ const IDE: React.FC = () => {
             </Button>
           </CardHeader>
           <CardContent className="p-0">
-            <Tabs defaultValue="code" className="w-full">
+            <Tabs value={selectedTab} onValueChange={v => setSelectedTab(v as "code" | "output")} className="w-full">
               <div className="border-b">
                 <TabsList className="bg-transparent border-b-0 px-4">
                   <TabsTrigger value="code" className="data-[state=active]:bg-white data-[state=active]:shadow-none">Code</TabsTrigger>
