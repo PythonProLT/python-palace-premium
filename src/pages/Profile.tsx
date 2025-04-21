@@ -10,9 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { User } from "@supabase/supabase-js";
-import { Image } from "lucide-react";
-
-const AVATARS_BUCKET = "avatars";
+import { Image, Loader2 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Profile: React.FC = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -21,107 +20,172 @@ const Profile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Always update user and session properly
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const getInitialSession = async () => {
+      setIsLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) {
         navigate("/signin");
-      } else {
-        setUser(session.user);
-        fetchProfile(session.user.id);
+        return;
       }
-    });
+      setUser(session.user);
+      await fetchProfile(session.user.id);
+      setIsLoading(false);
+    };
+
+    getInitialSession();
+
     // Also listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        setTimeout(() => {
+          fetchProfile(session.user.id);
+        }, 0);
       } else {
         navigate("/signin");
       }
     });
+    
     return () => subscription.unsubscribe();
     // eslint-disable-next-line
   }, []);
 
   const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    if (data) {
-      setProfile(data);
-      setDisplayName(data.display_name);
-      setBio(data.bio || "");
-      setAvatarUrl(data.avatar_url || null);
-    }
-    if (error) {
-      toast.error("Could not fetch profile", { description: error.message });
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (data) {
+        setProfile(data);
+        setDisplayName(data.display_name || "");
+        setBio(data.bio || "");
+        setAvatarUrl(data.avatar_url || null);
+      } else {
+        // If no profile exists yet, create one
+        const { error: insertError } = await supabase
+          .from("profiles")
+          .insert({ 
+            id: userId,
+            display_name: user?.email?.split('@')[0] || "User",
+            updated_at: new Date().toISOString()
+          });
+          
+        if (insertError) {
+          throw insertError;
+        }
+        
+        // Set default values after creating the profile
+        setDisplayName(user?.email?.split('@')[0] || "User");
+        setBio("");
+      }
+    } catch (error: any) {
+      toast.error("Error loading profile", { description: error.message });
     }
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    const updates = {
-      display_name: displayName,
-      bio,
-      updated_at: new Date().toISOString(),
-    };
-    const { error } = await supabase
-      .from("profiles")
-      .update(updates)
-      .eq("id", user.id);
-    if (error) {
-      toast.error("Update failed", { description: error.message });
-    } else {
+    
+    setIsLoading(true);
+    try {
+      const updates = {
+        display_name: displayName,
+        bio,
+        updated_at: new Date().toISOString(),
+      };
+      
+      const { error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user.id);
+        
+      if (error) {
+        throw error;
+      }
+      
       toast.success("Profile updated!");
-      fetchProfile(user.id);
+      await fetchProfile(user.id);
+    } catch (error: any) {
+      toast.error("Update failed", { description: error.message });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
+    
     setAvatarUploading(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}.${fileExt}`;
-    const filePath = fileName;
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
-    // Upload to storage
-    const { error: uploadError } = await supabase.storage
-      .from(AVATARS_BUCKET)
-      .upload(filePath, file, { upsert: true });
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
 
-    if (uploadError) {
-      setAvatarUploading(false);
-      toast.error("Failed to upload avatar", { description: uploadError.message });
-      return;
-    }
+      if (uploadError) {
+        throw uploadError;
+      }
 
-    // Get public URL & update profile
-    const { data } = supabase.storage
-      .from(AVATARS_BUCKET)
-      .getPublicUrl(filePath);
+      // Get public URL
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
 
-    if (data?.publicUrl) {
-      setAvatarUrl(data.publicUrl);
+      if (!data?.publicUrl) {
+        throw new Error("Failed to get public URL for avatar");
+      }
+
+      // Update profile with new avatar URL
       const { error: updateErr } = await supabase
         .from("profiles")
-        .update({ avatar_url: data.publicUrl, updated_at: new Date().toISOString() })
+        .update({ 
+          avatar_url: data.publicUrl, 
+          updated_at: new Date().toISOString() 
+        })
         .eq("id", user.id);
+        
       if (updateErr) {
-        toast.error("Failed to update avatar URL", { description: updateErr.message });
-      } else {
-        toast.success("Profile picture updated!");
+        throw updateErr;
       }
+      
+      setAvatarUrl(data.publicUrl);
+      toast.success("Profile picture updated!");
+    } catch (error: any) {
+      toast.error("Failed to update avatar", { description: error.message });
+    } finally {
+      setAvatarUploading(false);
     }
-    setAvatarUploading(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-python-blue" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!user) return null;
 
@@ -136,11 +200,15 @@ const Profile: React.FC = () => {
           <form className="space-y-6" onSubmit={handleSave}>
             {/* Avatar Upload */}
             <div className="flex flex-col items-center gap-3">
-              <div className="relative w-24 h-24 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center border">
-                {avatarUrl ?
-                  (<img src={avatarUrl} alt="Avatar" className="object-cover w-24 h-24" />)
-                  : <Image className="w-10 h-10 text-gray-400" />}
-              </div>
+              <Avatar className="w-24 h-24">
+                {avatarUrl ? (
+                  <AvatarImage src={avatarUrl} alt="Profile" />
+                ) : (
+                  <AvatarFallback className="bg-gray-100">
+                    <Image className="w-10 h-10 text-gray-400" />
+                  </AvatarFallback>
+                )}
+              </Avatar>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -174,14 +242,25 @@ const Profile: React.FC = () => {
               <Label htmlFor="bio">Bio</Label>
               <Textarea
                 id="bio"
-                value={bio}
+                value={bio || ""}
                 onChange={e => setBio(e.target.value)}
                 placeholder="Tell us a little about yourself (optional)"
                 maxLength={160}
               />
             </div>
             {/* Save Button */}
-            <Button type="submit" className="w-full bg-python-blue hover:bg-blue-700">Save</Button>
+            <Button 
+              type="submit" 
+              className="w-full bg-python-blue hover:bg-blue-700"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : "Save"}
+            </Button>
           </form>
         </div>
       </div>
