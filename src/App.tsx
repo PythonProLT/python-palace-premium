@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import IDEPage from "./pages/IDEPage";
 import TestPayment from "./pages/TestPayment";
+import IDESetup from "./pages/IDESetup";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -70,6 +70,7 @@ const App = () => (
           <Route path="/" element={<HomeRoute />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/ide-setup" element={<IDESetup />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
