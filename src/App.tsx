@@ -13,6 +13,7 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import Projects from "./pages/Projects";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -71,6 +72,7 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
           <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+          <Route path="/projects" element={<PrivateRoute element={<Projects />} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

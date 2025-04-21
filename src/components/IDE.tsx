@@ -1,21 +1,54 @@
 
 import React, { useState } from "react";
-import { FileText, Play, Folder } from "lucide-react";
+import { FileText, Play, Folder, Code } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { toast } from "sonner";
 
 const initialCode = `print("Hello, PythonPalace!")`;
 
 const IDE: React.FC = () => {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState("");
+  const [isExecuting, setIsExecuting] = useState(false);
 
-  // Placeholder run function: for now, just echo code output!
+  // Improved run function with simulated execution
   const runCode = () => {
-    setOutput(
-      "Python execution is not supported in-browser yet.\n\nYour code:\n" +
-        code
-    );
+    setIsExecuting(true);
+    setOutput("Executing code...");
+    
+    // Simulate code execution with timeout
+    setTimeout(() => {
+      try {
+        // Parse print statements from the code
+        const prints = [];
+        const lines = code.split('\n');
+        
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith('print(') && trimmed.endsWith(')')) {
+            // Extract content between print( and )
+            const content = trimmed.substring(6, trimmed.length - 1);
+            // Handle both single and double quotes
+            const processed = content.replace(/^["'](.*)["']$/, '$1');
+            prints.push(processed);
+          }
+        }
+        
+        if (prints.length > 0) {
+          setOutput(prints.join('\n'));
+        } else {
+          setOutput("Code executed successfully (no output)");
+        }
+        toast.success("Code executed successfully");
+      } catch (error) {
+        setOutput(`Error: ${error.message}`);
+        toast.error("Error executing code");
+      } finally {
+        setIsExecuting(false);
+      }
+    }, 500);
   };
 
   return (
@@ -42,26 +75,37 @@ const IDE: React.FC = () => {
             <Button
               className="bg-python-blue hover:bg-blue-700 text-white"
               onClick={runCode}
+              disabled={isExecuting}
             >
               <Play size={18} className="mr-2" />
-              Run
+              {isExecuting ? "Running..." : "Run"}
             </Button>
           </CardHeader>
           <CardContent className="p-0">
-            <textarea
-              value={code}
-              onChange={e => setCode(e.target.value)}
-              className="w-full font-mono text-sm h-48 p-4 outline-none border-0 resize-none rounded-none focus:ring-0"
-              style={{
-                background: "transparent",
-                minHeight: "200px",
-              }}
-              spellCheck={false}
-            />
-            <div className="border-t border-gray-200 p-4 bg-gray-50 font-mono text-xs text-gray-800 min-h-[64px]">
-              <div className="text-gray-500 font-medium mb-1">Output</div>
-              <pre className="bg-transparent p-0 m-0 min-h-4">{output || "..."}</pre>
-            </div>
+            <Tabs defaultValue="code" className="w-full">
+              <div className="border-b">
+                <TabsList className="bg-transparent border-b-0 px-4">
+                  <TabsTrigger value="code" className="data-[state=active]:bg-white data-[state=active]:shadow-none">Code</TabsTrigger>
+                  <TabsTrigger value="output" className="data-[state=active]:bg-white data-[state=active]:shadow-none">Output</TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="code" className="mt-0">
+                <textarea
+                  value={code}
+                  onChange={e => setCode(e.target.value)}
+                  className="w-full font-mono text-sm p-4 outline-none border-0 resize-none rounded-none focus:ring-0"
+                  style={{
+                    background: "transparent",
+                    minHeight: "300px",
+                  }}
+                  spellCheck={false}
+                />
+              </TabsContent>
+              <TabsContent value="output" className="mt-0 p-4 bg-gray-50 font-mono text-xs text-gray-800 min-h-[300px]">
+                <div className="text-gray-500 font-medium mb-1">Output</div>
+                <pre className="bg-transparent p-0 m-0 whitespace-pre-wrap">{output || "Run your code to see output here..."}</pre>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </main>

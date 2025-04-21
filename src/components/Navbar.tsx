@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Menu, X, LogIn, User, LogOut } from 'lucide-react';
+import { Menu, X, LogIn, User, LogOut, Code } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -65,6 +65,10 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-gray-700 hover:text-python-blue transition-colors">Home</Link>
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors">Courses</Link>
+          <Link to="/projects" className="text-gray-700 hover:text-python-blue transition-colors flex items-center gap-1">
+            <Code size={16} />
+            Projects
+          </Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors">Blog</Link>
           {user ? (
@@ -125,6 +129,10 @@ const Navbar: React.FC = () => {
         <div className="md:hidden container mx-auto px-4 pt-4 pb-6 flex flex-col space-y-4 animate-fade-in">
           <Link to="/" className="text-gray-700 hover:text-python-blue transition-colors py-2">Home</Link>
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors py-2">Courses</Link>
+          <Link to="/projects" className="text-gray-700 hover:text-python-blue transition-colors py-2 flex items-center gap-1">
+            <Code size={16} />
+            Projects
+          </Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors py-2">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors py-2">Blog</Link>
           {user ? (

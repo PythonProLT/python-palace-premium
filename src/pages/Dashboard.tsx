@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, BookOpen, GraduationCap, Award } from "lucide-react";
+import { Loader2, BookOpen, GraduationCap, Award, Code, Plus } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import IDE from "@/components/IDE";
+import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -89,12 +89,20 @@ const Dashboard: React.FC = () => {
                 <p className="text-gray-600">Your personalized learning dashboard</p>
               </div>
             </div>
-            <button 
-              className="bg-python-blue text-white rounded-full px-6 py-2 font-medium hover:bg-blue-700 transition-colors"
-              onClick={() => navigate('/courses')}
-            >
-              Browse Courses
-            </button>
+            <div className="flex gap-3">
+              <button 
+                className="bg-python-blue text-white rounded-full px-6 py-2 font-medium hover:bg-blue-700 transition-colors"
+                onClick={() => navigate('/courses')}
+              >
+                Browse Courses
+              </button>
+              <Link to="/projects">
+                <Button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6 py-2 font-medium">
+                  <Code size={18} className="mr-2" />
+                  Code Projects
+                </Button>
+              </Link>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -176,6 +184,34 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <a href="/profile" className="text-python-blue hover:underline mt-2 inline-block">See all achievements</a>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center mb-4">
+                <div className="bg-green-100 p-3 rounded-full mr-4">
+                  <Code className="h-6 w-6 text-green-600" />
+                </div>
+                <h2 className="text-xl font-semibold">Code Projects</h2>
+              </div>
+              <ul className="space-y-3">
+                <li className="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                  <span>Hello World</span>
+                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Recent</span>
+                </li>
+                <li className="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
+                  <span>Calculator App</span>
+                  <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">New</span>
+                </li>
+              </ul>
+              <div className="mt-4 flex justify-between items-center">
+                <Link to="/projects" className="text-python-blue hover:underline">View all projects</Link>
+                <Link to="/projects">
+                  <Button size="sm" variant="outline" className="flex items-center gap-1">
+                    <Plus size={16} />
+                    New
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
           
