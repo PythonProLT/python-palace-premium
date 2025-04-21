@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -6,6 +5,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, BookOpen, GraduationCap, Award } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import IDE from "@/components/IDE";
 
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -205,6 +205,11 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Python IDE</h2>
+          <p className="text-gray-600 mb-4">Experiment with Python code in a Replit-inspired editor. Coming soon: Real Python execution!</p>
+          <IDE />
         </div>
       </div>
       <Footer />
