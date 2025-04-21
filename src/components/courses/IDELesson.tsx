@@ -12,13 +12,13 @@ const IDELesson: React.FC = () => {
         <h1 className="text-3xl font-bold mb-6">Getting Started with Python: Choosing Your IDE</h1>
         <p className="text-lg text-gray-700 mb-6">
           Python is a very fun programming language to learn, as well as very versatile. 
-          This means that a beginner or an expert programmer may enjoy programming in Python, 
+          This means that a beginner or an expert programmer may enjoy programming in python, 
           as it has many different possibilities. Before we get started with programming, 
           we have to sort out a few things first.
         </p>
         <p className="text-lg text-gray-700">
           The first and most important thing is finding an IDE that you like. 
-          You can use either an IDE that you download, or a web-based IDE. 
+          You can use either a IDE that you download, or a web based IDE. 
           This application will allow you to create and run your programs.
         </p>
       </div>
@@ -35,15 +35,13 @@ const IDELesson: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-6">
-              You can use an online IDE such as Replit to create and run your programs. 
-              Online IDEs offer several advantages:
+              You can use an online IDE such as replit to  create and run your programs. 
+              In this video, I will show you how to create an account for replit, 
+              as well as some of its features.
             </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6">
-              <li>No installation required</li>
-              <li>Access from any device with a browser</li>
-              <li>Built-in collaboration features</li>
-              <li>Instant setup and configuration</li>
-            </ul>
+            <div className="mb-6 bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+              Video Placeholder for Replit Tutorial
+            </div>
             <Button className="w-full bg-python-blue hover:bg-blue-700"
                     onClick={() => window.open('https://replit.com', '_blank')}>
               Try Replit
@@ -61,15 +59,14 @@ const IDELesson: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-6">
-              If you prefer a local development environment, you can download an IDE. 
-              Popular options include:
+              If you don't want to use a online IDE, you can opt to download an IDE. 
+              Some commonly used IDEs are Spyder, Visual Studio Code, and IDLE. 
+              In this video, I will show you how to download them, 
+              as well as what Visual Studio Code and Spyder's UI look like.
             </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6">
-              <li>Visual Studio Code - Lightweight and extensible</li>
-              <li>PyCharm - Full-featured Python IDE</li>
-              <li>Spyder - Scientific computing focused</li>
-              <li>IDLE - Simple, included with Python</li>
-            </ul>
+            <div className="mb-6 bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+              Video Placeholder for Downloadable IDEs Tutorial
+            </div>
             <div className="space-y-2">
               <Button 
                 className="w-full bg-python-blue hover:bg-blue-700"
