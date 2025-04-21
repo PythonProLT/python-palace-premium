@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -50,7 +51,7 @@ const Profile: React.FC = () => {
     });
     
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -112,8 +113,7 @@ const Profile: React.FC = () => {
       }
       
       toast.success("Profile updated!");
-      await fetchProfile(user.id);
-      navigate("/");
+      navigate("/"); // This will go to HomeRoute which will redirect to dashboard
     } catch (error: any) {
       toast.error("Update failed", { description: error.message });
     } finally {

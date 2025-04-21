@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
@@ -34,7 +34,27 @@ const HomeRoute: React.FC = () => {
   }, []);
 
   if (loading) return null;
-  return user ? <Dashboard /> : <Index />;
+  return user ? <Navigate to="/dashboard" /> : <Index />;
+};
+
+// Private route component for authenticated users only
+const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) return null;
+  return user ? element : <Navigate to="/signin" />;
 };
 
 const App = () => (
@@ -49,8 +69,8 @@ const App = () => (
           <Route path="/courses" element={<Courses />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+          <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

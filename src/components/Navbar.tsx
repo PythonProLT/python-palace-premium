@@ -91,6 +91,11 @@ const Navbar: React.FC = () => {
                     <User className="mr-2 h-4 w-4" /> My Profile
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" /> Dashboard
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" /> Sign Out
@@ -123,34 +128,20 @@ const Navbar: React.FC = () => {
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors py-2">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors py-2">Blog</Link>
           {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center justify-start w-full">
-                  {avatarUrl ? (
-                    <Avatar className="h-8 w-8 mr-2">
-                      <AvatarImage src={avatarUrl} alt="Profile" />
-                      <AvatarFallback>
-                        <User className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <User className="mr-2 h-4 w-4" />
-                  )}
-                  Profile
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" /> My Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="space-y-2">
+              <Link to="/profile" className="flex items-center text-gray-700 hover:text-python-blue transition-colors py-2">
+                <User className="mr-2 h-4 w-4" /> My Profile
+              </Link>
+              <Link to="/dashboard" className="flex items-center text-gray-700 hover:text-python-blue transition-colors py-2">
+                <User className="mr-2 h-4 w-4" /> Dashboard
+              </Link>
+              <button 
+                onClick={handleSignOut}
+                className="w-full flex items-center text-red-600 hover:text-red-700 transition-colors py-2"
+              >
+                <LogOut className="mr-2 h-4 w-4" /> Sign Out
+              </button>
+            </div>
           ) : (
             <Link to="/signin">
               <Button className="bg-python-blue hover:bg-blue-700 w-full">
