@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, BookOpen, GraduationCap, Award, Code, Plus } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import IDE from "@/components/IDE";
 
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
