@@ -3,7 +3,7 @@ import React from "react";
 import { Plus, Code, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import IDE from "@/components/IDE";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/components/ui/menubar";
@@ -24,10 +24,12 @@ const Projects: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-800">Python Projects</h1>
               <p className="text-gray-600">Create, manage, and run your Python code</p>
             </div>
-            <Button className="bg-python-blue hover:bg-blue-700">
-              <Plus size={18} className="mr-2" />
-              New Project
-            </Button>
+            <Link to="/ide">
+              <Button className="bg-python-blue hover:bg-blue-700">
+                <Plus size={18} className="mr-2" />
+                New Project
+              </Button>
+            </Link>
           </div>
 
           <Menubar className="mb-8">
@@ -93,15 +95,15 @@ const Projects: React.FC = () => {
                 <Code size={48} className="text-gray-300" />
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full">Create New</Button>
+                <Link to="/ide" className="w-full">
+                  <Button variant="outline" className="w-full">Create New</Button>
+                </Link>
               </CardFooter>
             </Card>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Current Project</h2>
-            <IDE />
-          </div>
+          {/* IDE removed from the Projects page */}
+
         </div>
       </div>
       <Footer />

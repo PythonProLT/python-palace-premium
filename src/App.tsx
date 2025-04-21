@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
+import IDEPage from "./pages/IDEPage";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -73,6 +73,7 @@ const App = () => (
           <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
           <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
           <Route path="/projects" element={<PrivateRoute element={<Projects />} />} />
+          <Route path="/ide" element={<PrivateRoute element={<IDEPage />} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
