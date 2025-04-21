@@ -43,11 +43,18 @@ const Courses: React.FC = () => {
                   data types to control structures and functions.
                 </p>
                 <CodeBlock code='print("Hello, Python World!")' />
-                <Link to="/courses/basics">
-                  <Button className="w-full mt-6 bg-python-blue hover:bg-blue-700">
-                    Start Learning
-                  </Button>
-                </Link>
+                <div className="flex flex-col space-y-2 mt-6">
+                  <Link to="/courses/ide-setup">
+                    <Button className="w-full bg-python-blue hover:bg-blue-700">
+                      IDE Setup Guide
+                    </Button>
+                  </Link>
+                  <Link to="/courses/basics">
+                    <Button variant="outline" className="w-full">
+                      Start Learning
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
             
