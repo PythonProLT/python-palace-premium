@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,8 +38,12 @@ const IDELesson: React.FC = () => {
               In this video, I will show you how to create an account for replit, 
               as well as some of its features.
             </p>
-            <div className="mb-6 bg-gray-100 rounded-lg h-64 flex items-center justify-center">
-              Video Placeholder for Replit Tutorial
+            <div className="mb-6 rounded-lg overflow-hidden">
+              <img 
+                src="/lovable-uploads/f2accb11-c038-412f-87f6-dbaa8beee320.png" 
+                alt="Replit IDE interface showing Google Chrome with Replit shortcut"
+                className="w-full h-auto object-cover"
+              />
             </div>
             <Button className="w-full bg-python-blue hover:bg-blue-700"
                     onClick={() => window.open('https://replit.com', '_blank')}>
@@ -64,8 +67,12 @@ const IDELesson: React.FC = () => {
               In this video, I will show you how to download them, 
               as well as what Visual Studio Code and Spyder's UI look like.
             </p>
-            <div className="mb-6 bg-gray-100 rounded-lg h-64 flex items-center justify-center">
-              Video Placeholder for Downloadable IDEs Tutorial
+            <div className="mb-6 rounded-lg overflow-hidden">
+              <img 
+                src="/lovable-uploads/dc08846a-fc22-4805-87fb-5669b220391b.png" 
+                alt="Chrome interface showing development environment shortcuts"
+                className="w-full h-auto object-cover"
+              />
             </div>
             <div className="space-y-2">
               <Button 
