@@ -2,10 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
+import { Menu, X, LogIn, User, LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,15 +21,10 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check current auth status
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
+      if (session?.user) fetchProfile(session.user.id);
     });
-
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -31,7 +33,6 @@ const Navbar: React.FC = () => {
         }, 0);
       }
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
@@ -41,10 +42,7 @@ const Navbar: React.FC = () => {
       .select("avatar_url")
       .eq("id", userId)
       .maybeSingle();
-    
-    if (data?.avatar_url) {
-      setAvatarUrl(data.avatar_url);
-    }
+    if (data?.avatar_url) setAvatarUrl(data.avatar_url);
   };
 
   const handleSignOut = async () => {
@@ -69,25 +67,36 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors">Blog</Link>
-          {user && (
-            <Link to="/profile" className="text-gray-700 hover:text-python-blue transition-colors flex items-center">
-              {avatarUrl ? (
-                <Avatar className="h-8 w-8 mr-2">
-                  <AvatarImage src={avatarUrl} alt="Profile" />
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
-                </Avatar>
-              ) : (
-                <User className="mr-2 h-4 w-4" />
-              )}
-              Profile
-            </Link>
-          )}
           {user ? (
-            <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700">
-              <LogOut className="mr-2 h-4 w-4" /> Sign Out
-            </Button>
+            // Profile dropdown
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative flex items-center px-2 py-1">
+                  {avatarUrl ? (
+                    <Avatar className="h-8 w-8 mr-2">
+                      <AvatarImage src={avatarUrl} alt="Profile" />
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User className="mr-2 h-4 w-4" />
+                  )}
+                  Profile
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" /> My Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/signin">
               <Button className="bg-python-blue hover:bg-blue-700">
@@ -113,25 +122,35 @@ const Navbar: React.FC = () => {
           <Link to="/courses" className="text-gray-700 hover:text-python-blue transition-colors py-2">Courses</Link>
           <Link to="/pricing" className="text-gray-700 hover:text-python-blue transition-colors py-2">Pricing</Link>
           <Link to="/blog" className="text-gray-700 hover:text-python-blue transition-colors py-2">Blog</Link>
-          {user && (
-            <Link to="/profile" className="text-gray-700 hover:text-python-blue transition-colors py-2 flex items-center">
-              {avatarUrl ? (
-                <Avatar className="h-8 w-8 mr-2">
-                  <AvatarImage src={avatarUrl} alt="Profile" />
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
-                </Avatar>
-              ) : (
-                <User className="mr-2 h-4 w-4" />
-              )}
-              Profile
-            </Link>
-          )}
           {user ? (
-            <Button onClick={handleSignOut} className="bg-python-blue hover:bg-blue-700 w-full">
-              <LogOut className="mr-2 h-4 w-4" /> Sign Out
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center justify-start w-full">
+                  {avatarUrl ? (
+                    <Avatar className="h-8 w-8 mr-2">
+                      <AvatarImage src={avatarUrl} alt="Profile" />
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User className="mr-2 h-4 w-4" />
+                  )}
+                  Profile
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" /> My Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/signin">
               <Button className="bg-python-blue hover:bg-blue-700 w-full">

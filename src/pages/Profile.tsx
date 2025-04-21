@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -25,7 +24,6 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Always update user and session properly
     const getInitialSession = async () => {
       setIsLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
@@ -40,7 +38,6 @@ const Profile: React.FC = () => {
 
     getInitialSession();
 
-    // Also listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -53,7 +50,6 @@ const Profile: React.FC = () => {
     });
     
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line
   }, []);
 
   const fetchProfile = async (userId: string) => {
@@ -74,7 +70,6 @@ const Profile: React.FC = () => {
         setBio(data.bio || "");
         setAvatarUrl(data.avatar_url || null);
       } else {
-        // If no profile exists yet, create one
         const { error: insertError } = await supabase
           .from("profiles")
           .insert({ 
@@ -87,7 +82,6 @@ const Profile: React.FC = () => {
           throw insertError;
         }
         
-        // Set default values after creating the profile
         setDisplayName(user?.email?.split('@')[0] || "User");
         setBio("");
       }
@@ -119,6 +113,7 @@ const Profile: React.FC = () => {
       
       toast.success("Profile updated!");
       await fetchProfile(user.id);
+      navigate("/");
     } catch (error: any) {
       toast.error("Update failed", { description: error.message });
     } finally {
@@ -135,7 +130,6 @@ const Profile: React.FC = () => {
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
-      // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true });
@@ -144,7 +138,6 @@ const Profile: React.FC = () => {
         throw uploadError;
       }
 
-      // Get public URL
       const { data } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
@@ -153,7 +146,6 @@ const Profile: React.FC = () => {
         throw new Error("Failed to get public URL for avatar");
       }
 
-      // Update profile with new avatar URL
       const { error: updateErr } = await supabase
         .from("profiles")
         .update({ 
@@ -198,7 +190,6 @@ const Profile: React.FC = () => {
             Your Profile
           </h2>
           <form className="space-y-6" onSubmit={handleSave}>
-            {/* Avatar Upload */}
             <div className="flex flex-col items-center gap-3">
               <Avatar className="w-24 h-24">
                 {avatarUrl ? (
@@ -226,7 +217,6 @@ const Profile: React.FC = () => {
                 {avatarUploading ? "Uploading..." : "Change Profile Picture"}
               </Button>
             </div>
-            {/* Display Name */}
             <div>
               <Label htmlFor="displayName">Display Name</Label>
               <Input
@@ -237,7 +227,6 @@ const Profile: React.FC = () => {
                 maxLength={32}
               />
             </div>
-            {/* Bio */}
             <div>
               <Label htmlFor="bio">Bio</Label>
               <Textarea
@@ -248,7 +237,6 @@ const Profile: React.FC = () => {
                 maxLength={160}
               />
             </div>
-            {/* Save Button */}
             <Button 
               type="submit" 
               className="w-full bg-python-blue hover:bg-blue-700"
