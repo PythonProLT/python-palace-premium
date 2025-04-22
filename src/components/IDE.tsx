@@ -184,7 +184,7 @@ const IDE: React.FC = () => {
               </div>
               <TabsContent value="code" className="flex-1 m-0">
                 <Editor
-                  height="100%"
+                  height="600px"  // Increased height from default
                   defaultLanguage="python"
                   value={code}
                   onChange={handleEditorChange}
