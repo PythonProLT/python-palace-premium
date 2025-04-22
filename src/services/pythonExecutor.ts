@@ -1,5 +1,10 @@
 
-import { loadPyodide } from 'pyodide';
+// Declare the Pyodide global type
+declare global {
+  interface Window {
+    loadPyodide: () => Promise<any>;
+  }
+}
 
 class PythonExecutor {
   private pyodide: any = null;
@@ -16,7 +21,8 @@ class PythonExecutor {
     this.isLoading = true;
     this.loadPromise = new Promise(async (resolve) => {
       try {
-        this.pyodide = await loadPyodide();
+        // Use the global loadPyodide function instead of importing it
+        this.pyodide = await window.loadPyodide();
         resolve();
       } catch (error) {
         console.error('Failed to load Pyodide:', error);
@@ -44,4 +50,3 @@ class PythonExecutor {
 }
 
 export const pythonExecutor = new PythonExecutor();
-
