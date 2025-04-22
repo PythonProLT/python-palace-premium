@@ -4,7 +4,7 @@ import { toast } from "sonner";
 // Declare the Pyodide global type
 declare global {
   interface Window {
-    loadPyodide: () => Promise<any>;
+    loadPyodide: (config?: any) => Promise<any>;
   }
 }
 
@@ -24,9 +24,18 @@ class PythonExecutor {
     this.loadPromise = new Promise(async (resolve) => {
       try {
         // Use the global loadPyodide function from the script tag
+        // Updated the type to accept configuration
         this.pyodide = await window.loadPyodide({
           indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
         });
+        
+        // Initialize stdout capture for Python
+        this.pyodide.runPython(`
+          import sys
+          import io
+          sys.stdout = io.StringIO()
+        `);
+        
         resolve();
       } catch (error) {
         console.error('Failed to load Pyodide:', error);
@@ -48,7 +57,6 @@ class PythonExecutor {
     try {
       // Capture stdout
       let output = '';
-      const originalStdout = this.pyodide.runPython('import sys\nsys.stdout.getvalue()');
       
       // Run the code
       const result = await this.pyodide.runPythonAsync(code);
@@ -69,4 +77,3 @@ class PythonExecutor {
 }
 
 export const pythonExecutor = new PythonExecutor();
-
