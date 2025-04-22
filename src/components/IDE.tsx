@@ -14,40 +14,77 @@ const IDE: React.FC = () => {
   const [isExecuting, setIsExecuting] = useState(false);
   const [selectedTab, setSelectedTab] = useState<"code" | "output">("code");
 
-  // Improved run function with simulated execution
+  // Enhanced Python code execution simulator
   const runCode = () => {
     setIsExecuting(true);
     setOutput("Executing code...");
 
-    // Simulate code execution with timeout
     setTimeout(() => {
       try {
-        // Parse print statements from the code
-        const prints = [];
         const lines = code.split('\n');
+        const output: string[] = [];
+        let indentationLevel = 0;
+        let inLoop = false;
+        let loopCount = 0;
+
         for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed.startsWith('print(') && trimmed.endsWith(')')) {
-            // Extract content between print( and )
-            const content = trimmed.substring(6, trimmed.length - 1);
-            // Handle both single and double quotes
+          const trimmedLine = line.trim();
+          
+          // Handle basic Python syntax
+          if (trimmedLine.startsWith('print(')) {
+            const content = trimmedLine.substring(6, trimmedLine.length - 1);
+            // Handle string literals with both single and double quotes
             const processed = content.replace(/^["'](.*)["']$/, '$1');
-            prints.push(processed);
+            
+            if (inLoop && loopCount > 0) {
+              for (let i = 0; i < loopCount; i++) {
+                output.push(processed);
+              }
+            } else {
+              output.push(processed);
+            }
+          }
+          // Basic for loop simulation
+          else if (trimmedLine.startsWith('for ') && trimmedLine.includes(' in range(')) {
+            inLoop = true;
+            const rangeMatch = trimmedLine.match(/range\((\d+)\)/);
+            if (rangeMatch) {
+              loopCount = parseInt(rangeMatch[1]);
+            }
+          }
+          // Handle basic variable assignment
+          else if (trimmedLine.includes('=')) {
+            const [varName, value] = trimmedLine.split('=').map(part => part.trim());
+            output.push(`Variable ${varName} assigned value: ${value}`);
+          }
+          // Handle comments
+          else if (trimmedLine.startsWith('#')) {
+            // Ignore comments
+            continue;
+          }
+          // Empty lines
+          else if (trimmedLine === '') {
+            continue;
+          }
+          // Unknown command
+          else if (trimmedLine) {
+            output.push(`Command not supported: ${trimmedLine}`);
           }
         }
 
-        if (prints.length > 0) {
-          setOutput(prints.join('\n'));
+        if (output.length > 0) {
+          setOutput(output.join('\n'));
+          toast.success("Code executed successfully");
         } else {
-          setOutput("Code executed successfully (no output)");
+          setOutput("No output generated");
+          toast.success("Code executed successfully (no output)");
         }
-        toast.success("Code executed successfully");
       } catch (error: any) {
         setOutput(`Error: ${error.message}`);
         toast.error("Error executing code");
       } finally {
         setIsExecuting(false);
-        setSelectedTab("output"); // Switch to output tab on run
+        setSelectedTab("output");
       }
     }, 500);
   };
@@ -63,7 +100,6 @@ const IDE: React.FC = () => {
           <FileText size={16} />
           <span>main.py</span>
         </div>
-        {/* Ready for more files/folders */}
       </aside>
 
       {/* Main IDE area */}
