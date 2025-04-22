@@ -69,11 +69,13 @@ const IDELesson: React.FC = () => {
               In this video, I will show you how to download them, 
               as well as what Visual Studio Code and Spyder's UI look like.
             </p>
-            <div className="mb-6 rounded-lg overflow-hidden">
-              <img 
-                src="/lovable-uploads/dc08846a-fc22-4805-87fb-5669b220391b.png" 
-                alt="Chrome interface showing development environment shortcuts"
-                className="w-full h-auto object-cover"
+            <div className="mb-6 rounded-lg overflow-hidden" style={{ position: 'relative', paddingTop: '65.03%' }}>
+              <iframe 
+                src="https://player.vimeo.com/video/1077408488?h=d61dbbcee0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                title="Download IDE Video"
               />
             </div>
             <div className="space-y-2">
