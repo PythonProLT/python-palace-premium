@@ -66,7 +66,9 @@ const IDE: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<"code" | "output">("code");
 
   const handleEditorChange = (value: string | undefined) => {
-    setCode(value || "");
+    if (value !== undefined) {
+      setCode(value);
+    }
   };
 
   const runCode = async () => {
@@ -193,6 +195,7 @@ const IDE: React.FC = () => {
                     lineNumbers: "on",
                     scrollBeyondLastLine: false,
                     automaticLayout: true,
+                    readOnly: false
                   }}
                 />
               </TabsContent>
@@ -213,4 +216,3 @@ const IDE: React.FC = () => {
 };
 
 export default IDE;
-
